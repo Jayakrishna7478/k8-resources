@@ -1,11 +1,76 @@
-# this is PV (Persistent Volumes)
-apiVersion: v1
+# # this is PV (Persistent Volumes)
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: ebs-static
+# spec:
+#   accessModes:
+#   - ReadWriteOnce #EBS volume should have readwriteonce, because it Hard disk (HD)
+#   capacity:
+#     storage: 5Gi
+#   csi:
+#     driver: ebs.csi.aws.com
+#     fsType: ext4
+#     volumeHandle: vol-097c2167b3084428c
+# ---
+# # this is PVC (Persistent Volumes Claim)
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: ebs-static
+# spec:
+#   storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set. for static provisioning this is empty
+#   volumeName: ebs-static
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 5Gi
+# ---
+# # This is pod
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: app
+#   Labels:
+#     demo: ebs-static
+# spec:
+#   containers:
+#   - name: nginx
+#     image: nginx
+#     volumeMounts:
+#     - name: nginx-data
+#       mountPath: /usr/share/nginx/html
+#   nodeSelector:
+#     zone: 1b
+#   volumes:
+#   - name: nginx-data
+#     persistentVolumeClaim:
+#       claimName: ebs-static
+# ---
+# # This is Load Balancer
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ebs-static
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     demo: ebs-static
+#   ports:
+#   - protocol: TCP
+#     port: 80 #service-port
+#     targetPort: 80 #container-port
+
+
+
+    apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: ebs-static
 spec:
   accessModes:
-  - ReadWriteOnce #EBS volume should have readwriteonce, because it Hard disk (HD)
+  - ReadWriteOnce #EBS volume should have readwriteonce, because it HD.
   capacity:
     storage: 5Gi
   csi:
@@ -13,7 +78,6 @@ spec:
     fsType: ext4
     volumeHandle: vol-097c2167b3084428c
 ---
-# this is PVC (Persistent Volumes Claim)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -25,14 +89,13 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 4Gi
 ---
-# This is pod
 apiVersion: v1
 kind: Pod
 metadata:
   name: app
-  Labels:
+  labels:
     demo: ebs-static
 spec:
   containers:
@@ -48,7 +111,6 @@ spec:
     persistentVolumeClaim:
       claimName: ebs-static
 ---
-# This is Load Balancer
 apiVersion: v1
 kind: Service
 metadata:
