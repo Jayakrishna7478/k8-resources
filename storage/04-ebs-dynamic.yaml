@@ -15,7 +15,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: app
-  Labels:
+  labels:
     demo: ebs-dynamic
 spec:
   containers:
