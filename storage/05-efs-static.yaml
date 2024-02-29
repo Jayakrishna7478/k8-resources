@@ -1,40 +1,38 @@
-# This is all static provisioning
-# this is PV (Persistent Volumes)
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: ebs-static
+  name: efs-static
 spec:
-  accessModes:
-  - ReadWriteOnce #EBS volume should have readwriteonce, because it Hard disk (HD)
   capacity:
     storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  persistentVolumeReclaimPolicy: Retain
   csi:
-    driver: ebs.csi.aws.com
-    fsType: ext4
-    volumeHandle: vol-005884f1b6510a38f
+    driver: efs.csi.aws.com
+    volumeHandle: fs-016a860b1f7383cac 
 ---
-# this is PVC (Persistent Volumes Claim)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ebs-static
+  name: efs-static
 spec:
-  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set. for static provisioning this is empty
-  volumeName: ebs-static
   accessModes:
     - ReadWriteOnce
+  storageClassName: ""
+  volumeName: efs-static
   resources:
     requests:
-      storage: 4Gi
+      storage: 5Gi
 ---
-# This is pod
 apiVersion: v1
 kind: Pod
 metadata:
   name: app
-  Labels:
-    demo: ebs-static
+  labels:
+    demo: efs-static
 spec:
   containers:
   - name: nginx
@@ -47,17 +45,16 @@ spec:
   volumes:
   - name: nginx-data
     persistentVolumeClaim:
-      claimName: ebs-static
+      claimName: efs-static
 ---
-# This is Load Balancer
 apiVersion: v1
 kind: Service
 metadata:
-  name: ebs-static
+  name: efs-static
 spec:
   type: LoadBalancer
   selector:
-    demo: ebs-static
+    demo: efs-static
   ports:
   - protocol: TCP
     port: 80 #service-port
