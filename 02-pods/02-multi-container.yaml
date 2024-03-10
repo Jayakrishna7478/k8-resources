@@ -12,4 +12,3 @@ spec:
   - name: almalinux
     image: almalinux:8
     command: ["slepp","300  "]
-  - name: 
