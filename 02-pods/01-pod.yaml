@@ -1,12 +1,10 @@
-apiVersion: v1
+apiversion: v1
 kind: Pod
 metadata:
-  name: hello-pod
-  namespace: roboshop
+  name: jaya
 spec:
-# list of containers
-  containers:
-  - name: hello-pod
+  containar:
+  - name: jaya
     image: nginx
     ports:
-    - containerPort: 80
+    - containerports: 80
